@@ -9,7 +9,7 @@ from distance_transformer import DistanceToCenterTransformer
 
 
 
-def preprocess_data(df, central_lon, central_lat):
+def preprocess_data(df):
     # Handling missing values in 'last_review'
     df['last_review'] = pd.to_datetime(df['last_review'], errors='coerce')  # Coerce errors will turn invalid parsing into NaT
     
@@ -26,7 +26,7 @@ def preprocess_data(df, central_lon, central_lat):
     
     # Feature engineering
     # df['distance_to_center'] = np.sqrt(df['latitude']**2 + df['longitude']**2)
-    distance_transformer = DistanceToCenterTransformer(central_lon, central_lat)
+
     if 'reviews_per_month' in df.columns:
         df['reviews_per_day'] = df['number_of_reviews'] / ((df['last_review'] - df['last_review'].min()).dt.days + 1)
     
@@ -57,14 +57,11 @@ def preprocess_data(df, central_lon, central_lat):
         ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ])
 
-    location_features = ['latitude', 'longitude']
-
     # Combining preprocessing steps in a ColumnTransformer
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, numeric_features),
-            ('cat', categorical_transformer, categorical_features),
-            ('dist', distance_transformer, location_features)
+            ('cat', categorical_transformer, categorical_features)
         ],
         remainder='drop'  # Exclude all other columns not specified in transformers
     )
