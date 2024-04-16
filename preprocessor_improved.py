@@ -24,8 +24,6 @@ def preprocess_data(df):
     for feature in datetime_features:
         df[feature].fillna(df[feature].median(), inplace=True)
     
-    # Feature engineering
-    # df['distance_to_center'] = np.sqrt(df['latitude']**2 + df['longitude']**2)
 
     if 'reviews_per_month' in df.columns:
         df['reviews_per_day'] = df['number_of_reviews'] / ((df['last_review'] - df['last_review'].min()).dt.days + 1)
@@ -71,8 +69,6 @@ def preprocess_data(df):
     X = df[relevant_features]
     y = df['price']
     
-    # Fit and transform the data
-    X_transformed = preprocessor.fit_transform(X)
     
     return preprocessor, X, y
 
