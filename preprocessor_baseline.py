@@ -5,25 +5,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import pandas as pd
 
 
-def preprocess_data(df):
-    # Selecting relevant features for the model
-    df.drop(['id', 'name', 'host_id', 'host_name'], axis=1, inplace=True)
-
-
-    # Handling missing values in 'last_review'
-    df['last_review'] = pd.to_datetime(df['last_review'], errors='coerce')  # Coerce errors will turn invalid parsing into NaT
-
-    # Extract additional datetime features
-    df['year'] = df['last_review'].dt.year
-    df['month'] = df['last_review'].dt.month
-    df['day'] = df['last_review'].dt.day
-    df['weekday'] = df['last_review'].dt.weekday
-    
-    # Impute datetime features where 'last_review' is NaT
-    datetime_features = ['year', 'month', 'day', 'weekday']
-    for feature in datetime_features:
-        df[feature].fillna(df[feature].median(), inplace=True)
-    
+def preprocess_data(df):    
     # Defining preprocessing for numeric columns
     numeric_features = ['latitude', 'longitude', 'minimum_nights', 'number_of_reviews', 'reviews_per_month', 'calculated_host_listings_count', 'availability_365']
     numeric_transformer = Pipeline(steps=[
@@ -42,8 +24,10 @@ def preprocess_data(df):
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, numeric_features),
-            ('cat', categorical_transformer, categorical_features)
-        ])
+            ('cat', categorical_transformer, categorical_features)        
+        ],
+        remainder='drop'
+    )
     
     X = df.drop('price', axis=1)
     y = df['price']
