@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_v
 def random_forest_regressor(X_train, X_test, y_train, y_test, preprocessor):
 
     # Creating and training the Random Forest model
-    rf_pipeline = Pipeline(steps=[('preprocessor', preprocessor),('regressor', RandomForestRegressor(n_estimators=100, random_state=42))])
+    rf_pipeline = Pipeline(steps=[('preprocessor', preprocessor),('regressor', RandomForestRegressor())])
     rf_pipeline.fit(X_train, y_train)
     
     # Predicting on the test set
