@@ -5,7 +5,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import pandas as pd
 
 
-def preprocess_data(df):    
+def get_preprocessor():    
     # Defining preprocessing for numeric columns
     numeric_features = ['latitude', 'longitude', 'minimum_nights', 'number_of_reviews', 'reviews_per_month', 'calculated_host_listings_count', 'availability_365']
     numeric_transformer = Pipeline(steps=[
@@ -29,7 +29,4 @@ def preprocess_data(df):
         remainder='drop'
     )
     
-    X = df.drop('price', axis=1)
-    y = df['price']
-
-    return preprocessor, X, y        
+    return preprocessor       
